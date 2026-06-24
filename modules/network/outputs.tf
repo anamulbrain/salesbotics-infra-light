@@ -9,16 +9,11 @@ output "vpc_cidr" {
 }
 
 output "public_subnet_ids" {
-  description = "Public subnet IDs (ALB)"
+  description = "Public subnet IDs (ALB, ECS in dev without NAT)"
   value       = aws_subnet.public[*].id
 }
 
 output "private_subnet_ids" {
-  description = "Private subnet IDs (ECS, RDS)"
+  description = "Private subnet IDs (RDS — no outbound internet)"
   value       = aws_subnet.private[*].id
-}
-
-output "nat_gateway_id" {
-  description = "NAT gateway ID"
-  value       = aws_nat_gateway.main.id
 }
