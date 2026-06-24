@@ -1,0 +1,5 @@
+aws_region   = "ap-south-1"
+project_name = "salesbotics"
+environment  = "dev"
+
+# Copy to terraform.tfvars (gitignored) to override defaults, or rely on variables.tf defaults.
