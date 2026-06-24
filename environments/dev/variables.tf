@@ -39,3 +39,49 @@ variable "private_subnet_cidrs" {
   type        = list(string)
   default     = ["10.0.11.0/24", "10.0.12.0/24"]
 }
+
+# --- API hostnames (must match Cloudflare DNS + ALB rules) ---
+
+variable "tenant_api_hostname" {
+  type    = string
+  default = "api.salesbotics.io"
+}
+
+variable "platform_api_hostname" {
+  type    = string
+  default = "staffapi.salesbotics.io"
+}
+
+variable "storefront_api_hostname" {
+  type    = string
+  default = "shopapi.salesbotics.io"
+}
+
+variable "auth_hostname" {
+  type    = string
+  default = "auth.salesbotics.io"
+}
+
+variable "acm_certificate_arn" {
+  description = "Optional ACM cert for HTTPS on ALB (leave empty for HTTP-only dev)"
+  type        = string
+  default     = ""
+}
+
+variable "api_image_tag" {
+  description = "Docker tag pushed to ECR (use after first docker push)"
+  type        = string
+  default     = "latest"
+}
+
+variable "cors_origins" {
+  type    = string
+  default = "*.salesbotics.io,http://localhost:3000"
+}
+
+variable "auth_admin_password" {
+  description = "Auth server admin password (leave empty to auto-generate)"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
