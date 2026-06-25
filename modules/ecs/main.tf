@@ -69,6 +69,24 @@ resource "aws_iam_role" "task" {
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
 }
 
+data "aws_iam_policy_document" "ecs_exec" {
+  statement {
+    actions = [
+      "ssmmessages:CreateControlChannel",
+      "ssmmessages:CreateDataChannel",
+      "ssmmessages:OpenControlChannel",
+      "ssmmessages:OpenDataChannel",
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_role_policy" "ecs_exec" {
+  name   = "${local.name_prefix}-ecs-exec"
+  role   = aws_iam_role.task.id
+  policy = data.aws_iam_policy_document.ecs_exec.json
+}
+
 locals {
   api_common_environment = [
     { name = "DEBUG", value = "false" },
@@ -303,21 +321,23 @@ resource "aws_ecs_task_definition" "migrate_platform" {
 
 locals {
   ecs_service_common = {
-    cluster         = aws_ecs_cluster.main.id
-    launch_type     = "FARGATE"
-    desired_count   = 1
-    subnets         = var.public_subnet_ids
-    security_groups = [var.ecs_security_group_id]
-    assign_public_ip = true
+    cluster                  = aws_ecs_cluster.main.id
+    launch_type              = "FARGATE"
+    desired_count            = 1
+    subnets                  = var.public_subnet_ids
+    security_groups          = [var.ecs_security_group_id]
+    assign_public_ip         = true
+    enable_execute_command   = true
   }
 }
 
 resource "aws_ecs_service" "tenant_api" {
-  name            = "${local.name_prefix}-tenant-api"
-  cluster         = local.ecs_service_common.cluster
-  task_definition = aws_ecs_task_definition.tenant_api.arn
-  desired_count   = local.ecs_service_common.desired_count
-  launch_type     = local.ecs_service_common.launch_type
+  name                   = "${local.name_prefix}-tenant-api"
+  cluster                = local.ecs_service_common.cluster
+  task_definition        = aws_ecs_task_definition.tenant_api.arn
+  desired_count          = local.ecs_service_common.desired_count
+  launch_type            = local.ecs_service_common.launch_type
+  enable_execute_command = local.ecs_service_common.enable_execute_command
 
   network_configuration {
     subnets          = local.ecs_service_common.subnets
@@ -335,11 +355,12 @@ resource "aws_ecs_service" "tenant_api" {
 }
 
 resource "aws_ecs_service" "platform_api" {
-  name            = "${local.name_prefix}-platform-api"
-  cluster         = local.ecs_service_common.cluster
-  task_definition = aws_ecs_task_definition.platform_api.arn
-  desired_count   = local.ecs_service_common.desired_count
-  launch_type     = local.ecs_service_common.launch_type
+  name                   = "${local.name_prefix}-platform-api"
+  cluster                = local.ecs_service_common.cluster
+  task_definition        = aws_ecs_task_definition.platform_api.arn
+  desired_count          = local.ecs_service_common.desired_count
+  launch_type            = local.ecs_service_common.launch_type
+  enable_execute_command = local.ecs_service_common.enable_execute_command
 
   network_configuration {
     subnets          = local.ecs_service_common.subnets
@@ -357,11 +378,12 @@ resource "aws_ecs_service" "platform_api" {
 }
 
 resource "aws_ecs_service" "storefront_api" {
-  name            = "${local.name_prefix}-storefront-api"
-  cluster         = local.ecs_service_common.cluster
-  task_definition = aws_ecs_task_definition.storefront_api.arn
-  desired_count   = local.ecs_service_common.desired_count
-  launch_type     = local.ecs_service_common.launch_type
+  name                   = "${local.name_prefix}-storefront-api"
+  cluster                = local.ecs_service_common.cluster
+  task_definition        = aws_ecs_task_definition.storefront_api.arn
+  desired_count          = local.ecs_service_common.desired_count
+  launch_type            = local.ecs_service_common.launch_type
+  enable_execute_command = local.ecs_service_common.enable_execute_command
 
   network_configuration {
     subnets          = local.ecs_service_common.subnets
@@ -379,11 +401,12 @@ resource "aws_ecs_service" "storefront_api" {
 }
 
 resource "aws_ecs_service" "auth" {
-  name            = "${local.name_prefix}-auth"
-  cluster         = local.ecs_service_common.cluster
-  task_definition = aws_ecs_task_definition.auth.arn
-  desired_count   = local.ecs_service_common.desired_count
-  launch_type     = local.ecs_service_common.launch_type
+  name                   = "${local.name_prefix}-auth"
+  cluster                = local.ecs_service_common.cluster
+  task_definition        = aws_ecs_task_definition.auth.arn
+  desired_count          = local.ecs_service_common.desired_count
+  launch_type            = local.ecs_service_common.launch_type
+  enable_execute_command = local.ecs_service_common.enable_execute_command
 
   network_configuration {
     subnets          = local.ecs_service_common.subnets
