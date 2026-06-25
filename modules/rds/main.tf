@@ -35,6 +35,17 @@ resource "aws_security_group" "rds" {
     security_groups = var.allowed_security_group_ids
   }
 
+  dynamic "ingress" {
+    for_each = length(var.admin_cidr_blocks) > 0 ? [1] : []
+    content {
+      description = "PostgreSQL from admin IP (dev direct access)"
+      from_port   = 5432
+      to_port     = 5432
+      protocol    = "tcp"
+      cidr_blocks = var.admin_cidr_blocks
+    }
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -44,8 +55,13 @@ resource "aws_security_group" "rds" {
 }
 
 resource "aws_db_subnet_group" "main" {
-  name       = "${local.name_prefix}-db-subnet"
-  subnet_ids = var.private_subnet_ids
+  # AWS cannot swap subnets on an in-use group — use a distinct name per public/private.
+  name       = "${local.name_prefix}-db-subnet-${var.publicly_accessible ? "public" : "private"}"
+  subnet_ids = var.db_subnet_ids
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_db_instance" "main" {
@@ -65,7 +81,8 @@ resource "aws_db_instance" "main" {
   db_subnet_group_name   = aws_db_subnet_group.main.name
   vpc_security_group_ids = [aws_security_group.rds.id]
 
-  publicly_accessible = false
+  publicly_accessible = var.publicly_accessible
+  apply_immediately   = true
   skip_final_snapshot = var.environment == "dev"
   deletion_protection = var.environment != "dev"
 

@@ -45,7 +45,9 @@ module "rds" {
   project_name               = var.project_name
   environment                = var.environment
   vpc_id                     = module.network.vpc_id
-  private_subnet_ids         = module.network.private_subnet_ids
+  db_subnet_ids              = var.rds_publicly_accessible ? module.network.public_subnet_ids : module.network.private_subnet_ids
+  publicly_accessible        = var.rds_publicly_accessible
+  admin_cidr_blocks          = var.rds_admin_cidr_blocks
   allowed_security_group_ids = [module.security_groups.ecs_security_group_id]
 }
 

@@ -47,7 +47,7 @@ resource "aws_lb_target_group" "tenant_api" {
   target_type = "ip"
 
   health_check {
-    path                = "/"
+    path                = "/health"
     healthy_threshold   = 2
     unhealthy_threshold = 3
     timeout             = 5
@@ -64,7 +64,7 @@ resource "aws_lb_target_group" "platform_api" {
   target_type = "ip"
 
   health_check {
-    path                = "/"
+    path                = "/health"
     healthy_threshold   = 2
     unhealthy_threshold = 3
     timeout             = 5
@@ -99,6 +99,7 @@ resource "aws_lb_target_group" "auth" {
 
   health_check {
     path                = "/health/ready"
+    port                = "9000"
     healthy_threshold   = 2
     unhealthy_threshold = 5
     timeout             = 10

@@ -8,4 +8,8 @@ environment  = "dev"
 # Optional: override auto-generated auth server admin password
 # auth_admin_password = "your-secure-password"
 
+# RDS public access (dev) — set your public IP from: curl -4 ifconfig.me
+# rds_publicly_accessible = true
+# rds_admin_cidr_blocks   = ["203.0.113.1/32"]
+
 # Copy to terraform.tfvars (gitignored) to override defaults.

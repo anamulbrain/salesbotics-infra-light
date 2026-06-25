@@ -36,6 +36,12 @@ output "rds_endpoint" {
   value = module.rds.endpoint
 }
 
+output "database_url" {
+  description = "SQLAlchemy DATABASE_URL (sensitive)"
+  value       = module.rds.database_url
+  sensitive   = true
+}
+
 output "auth_admin_password" {
   description = "Auth server admin console password (user: admin)"
   value       = local.auth_admin_password

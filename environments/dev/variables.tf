@@ -85,3 +85,15 @@ variable "auth_admin_password" {
   sensitive   = true
   default     = ""
 }
+
+variable "rds_publicly_accessible" {
+  description = "Enable RDS public IP for direct psql access (dev only)"
+  type        = bool
+  default     = true
+}
+
+variable "rds_admin_cidr_blocks" {
+  description = "Your public IP as CIDR for psql access, e.g. [\"203.0.113.1/32\"]"
+  type        = list(string)
+  default     = []
+}
