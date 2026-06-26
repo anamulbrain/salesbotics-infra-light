@@ -103,3 +103,21 @@ variable "rds_admin_cidr_blocks" {
   type        = list(string)
   default     = []
 }
+
+variable "github_org" {
+  description = "GitHub org/user that owns the API repository (for Actions OIDC)"
+  type        = string
+  default     = "salesbotics"
+}
+
+variable "github_api_repo" {
+  description = "API repository name deployed by GitHub Actions"
+  type        = string
+  default     = "salesbotics-api-light"
+}
+
+variable "github_oidc_provider_arn" {
+  description = "Set if this AWS account already has a GitHub OIDC provider"
+  type        = string
+  default     = ""
+}

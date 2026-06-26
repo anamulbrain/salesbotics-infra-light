@@ -62,14 +62,24 @@ output "api_hostnames" {
   }
 }
 
+output "github_deploy_role_arn" {
+  description = "Add as AWS_DEPLOY_ROLE_ARN secret in the API GitHub repo"
+  value       = module.github_deploy.role_arn
+}
+
 output "deploy_steps" {
   description = "Run these after terraform apply"
   value       = <<-EOT
-    1. Push API image: docker build -t <ecr_repository_url>:latest api && docker push ...
-    2. Push auth image: docker build -t <ecr_auth_repository_url>:latest api/keycloak && docker push ...
-    3. Run db-init task once to create auth database (first deploy only).
-    4. Platform migrations run automatically on API container startup.
-    5. Point Cloudflare DNS CNAMEs to alb_dns_name for all 4 hostnames.
-    6. Force new ECS deployment after image push (especially salesbotics-dev-auth).
+    GitHub Actions (API repo, push to main):
+      1. terraform apply here once, then set API repo secret AWS_DEPLOY_ROLE_ARN = github_deploy_role_arn output
+      2. Create GitHub Environment "dev" on the API repo (Settings → Environments)
+      3. Push to main — workflow builds images, runs migrations, updates ECS services
+
+    Manual fallback:
+      1. Push API image: docker build -t <ecr_repository_url>:latest . && docker push ...
+      2. Push auth image: docker build -t <ecr_auth_repository_url>:latest keycloak && docker push ...
+      3. Run db-init task once to create auth database (first deploy only).
+      4. Run scripts/ecs-deploy.sh with API_IMAGE and AUTH_IMAGE set.
+      5. Point Cloudflare DNS CNAMEs to alb_dns_name for all 4 hostnames.
   EOT
 }

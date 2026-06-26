@@ -83,6 +83,27 @@ module "ecs" {
   depends_on = [module.rds]
 }
 
+data "aws_caller_identity" "current" {}
+
+module "github_deploy" {
+  source = "../../modules/github-deploy"
+
+  project_name             = var.project_name
+  environment              = var.environment
+  aws_region               = var.aws_region
+  aws_account_id           = data.aws_caller_identity.current.account_id
+  github_org               = var.github_org
+  github_repo              = var.github_api_repo
+  ecs_cluster_name         = module.ecs.cluster_name
+  ecs_execution_role_arn   = module.ecs.execution_role_arn
+  ecs_task_role_arn        = module.ecs.task_role_arn
+  ecr_api_repository_arn   = module.ecr.repository_arn
+  ecr_auth_repository_arn  = module.ecr.auth_repository_arn
+  github_oidc_provider_arn = var.github_oidc_provider_arn
+
+  depends_on = [module.ecs, module.ecr]
+}
+
 resource "random_password" "auth_admin" {
   count   = var.auth_admin_password == "" ? 1 : 0
   length  = 24

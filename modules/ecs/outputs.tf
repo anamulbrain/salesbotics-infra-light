@@ -10,6 +10,14 @@ output "cluster_arn" {
   value = aws_ecs_cluster.main.arn
 }
 
+output "execution_role_arn" {
+  value = aws_iam_role.execution.arn
+}
+
+output "task_role_arn" {
+  value = aws_iam_role.task.arn
+}
+
 output "db_init_task_definition" {
   value = aws_ecs_task_definition.db_init.family
 }
