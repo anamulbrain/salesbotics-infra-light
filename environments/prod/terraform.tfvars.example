@@ -1,0 +1,18 @@
+aws_region   = "ap-south-1"
+project_name = "salesbotics"
+environment  = "prod"
+
+# Terraform runs from management account (444083008308) and assumes into production:
+aws_assume_role_arn = "arn:aws:iam::440977419872:role/OrganizationAccountAccessRole"
+
+# Request ACM cert in ap-south-1 in the PRODUCTION account, validate via DNS, then set:
+# acm_certificate_arn = "arn:aws:acm:ap-south-1:440977419872:certificate/..."
+
+# Set a strong password (or leave empty to auto-generate and read from terraform output)
+# auth_admin_username = "admin"
+# auth_admin_password = "your-secure-password"
+
+# Production RDS stays private (defaults). Do not enable public access unless you have a VPN/bastion.
+# rds_publicly_accessible = false
+
+# Copy to terraform.tfvars (gitignored) to override defaults.
