@@ -62,6 +62,7 @@ module "ecs" {
   public_subnet_ids           = module.network.public_subnet_ids
   alb_security_group_id       = module.alb.security_group_id
   api_image                   = "${module.ecr.repository_url}:${var.api_image_tag}"
+  auth_image                  = "${module.ecr.auth_repository_url}:${var.api_image_tag}"
   tenant_target_group_arn     = module.alb.tenant_target_group_arn
   platform_target_group_arn   = module.alb.platform_target_group_arn
   storefront_target_group_arn = module.alb.storefront_target_group_arn

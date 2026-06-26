@@ -226,7 +226,7 @@ resource "aws_ecs_task_definition" "auth" {
       name      = "auth"
       image     = var.auth_image
       essential = true
-      command   = ["start"]
+      command   = ["start", "--import-realm"]
       portMappings = [
         {
           containerPort = 8080

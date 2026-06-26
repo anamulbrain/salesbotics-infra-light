@@ -28,6 +28,11 @@ output "ecr_repository_url" {
   value       = module.ecr.repository_url
 }
 
+output "ecr_auth_repository_url" {
+  description = "Docker push target for the Keycloak (auth) image"
+  value       = module.ecr.auth_repository_url
+}
+
 output "ecs_cluster_name" {
   value = module.ecs.cluster_name
 }
@@ -60,10 +65,11 @@ output "api_hostnames" {
 output "deploy_steps" {
   description = "Run these after terraform apply"
   value       = <<-EOT
-    1. Push API image to ECR (see ecr_repository_url).
-    2. Run db-init task once to create auth database (first deploy only).
-    3. Platform migrations run automatically on API container startup.
-    4. Point Cloudflare DNS CNAMEs to alb_dns_name for all 4 hostnames.
-    5. Force new ECS deployment if tasks were unhealthy before image push.
+    1. Push API image: docker build -t <ecr_repository_url>:latest api && docker push ...
+    2. Push auth image: docker build -t <ecr_auth_repository_url>:latest api/keycloak && docker push ...
+    3. Run db-init task once to create auth database (first deploy only).
+    4. Platform migrations run automatically on API container startup.
+    5. Point Cloudflare DNS CNAMEs to alb_dns_name for all 4 hostnames.
+    6. Force new ECS deployment after image push (especially salesbotics-dev-auth).
   EOT
 }
