@@ -91,6 +91,11 @@ variable "auth_realm" {
   default = "salesbotics"
 }
 
+variable "auth_admin_username" {
+  type    = string
+  default = "admin"
+}
+
 variable "auth_admin_password" {
   type      = string
   sensitive = true

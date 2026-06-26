@@ -75,6 +75,7 @@ module "ecs" {
   tenant_api_hostname         = var.tenant_api_hostname
   platform_api_hostname       = var.platform_api_hostname
   storefront_api_hostname     = var.storefront_api_hostname
+  auth_admin_username         = var.auth_admin_username
   auth_admin_password         = local.auth_admin_password
   cors_origins                = var.cors_origins
 

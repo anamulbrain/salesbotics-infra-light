@@ -91,13 +91,14 @@ locals {
   api_common_environment = [
     { name = "DEBUG", value = "false" },
     { name = "DATABASE_URL", value = var.database_url },
+    { name = "RUN_PLATFORM_MIGRATIONS", value = "true" },
     { name = "KEYCLOAK_SERVER_URL", value = "https://${var.auth_hostname}" },
     { name = "KEYCLOAK_REALM", value = var.auth_realm },
     { name = "KEYCLOAK_PLATFORM_CLIENT_ID", value = "salesbotics-platform" },
     { name = "KEYCLOAK_TENANT_CLIENT_ID", value = "salesbotics-tenant" },
     { name = "KEYCLOAK_JWKS_URL", value = "${local.auth_internal_url}/realms/${var.auth_realm}/protocol/openid-connect/certs" },
     { name = "KEYCLOAK_ADMIN_URL", value = local.auth_internal_url },
-    { name = "KEYCLOAK_ADMIN_USERNAME", value = "admin" },
+    { name = "KEYCLOAK_ADMIN_USERNAME", value = var.auth_admin_username },
     { name = "KEYCLOAK_ADMIN_PASSWORD", value = var.auth_admin_password },
     { name = "CORS_ORIGINS", value = var.cors_origins },
   ]
@@ -243,7 +244,7 @@ resource "aws_ecs_task_definition" "auth" {
         { name = "KC_PROXY_HEADERS", value = "xforwarded" },
         { name = "KC_HTTP_ENABLED", value = "true" },
         { name = "KC_HEALTH_ENABLED", value = "true" },
-        { name = "KEYCLOAK_ADMIN", value = "admin" },
+        { name = "KEYCLOAK_ADMIN", value = var.auth_admin_username },
         { name = "KEYCLOAK_ADMIN_PASSWORD", value = var.auth_admin_password },
       ]
       logConfiguration = {
