@@ -79,6 +79,12 @@ variable "cors_origins" {
   default = "*.salesbotics.io,http://localhost:3000"
 }
 
+variable "auth_admin_username" {
+  description = "Keycloak master-realm admin username"
+  type        = string
+  default     = "admin"
+}
+
 variable "auth_admin_password" {
   description = "Auth server admin password (leave empty to auto-generate)"
   type        = string

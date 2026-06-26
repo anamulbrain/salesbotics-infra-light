@@ -5,7 +5,8 @@ environment  = "dev"
 # Optional: set after requesting ACM cert in ap-south-1
 # acm_certificate_arn = "arn:aws:acm:ap-south-1:444083008308:certificate/..."
 
-# Optional: override auto-generated auth server admin password
+# Optional: override Keycloak admin credentials
+# auth_admin_username = "apiuser"
 # auth_admin_password = "your-secure-password"
 
 # RDS public access (dev) — set your public IP from: curl -4 ifconfig.me
